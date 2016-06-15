@@ -11,18 +11,46 @@ if (isset($_POST['who'])) {
 
     $html = "";
 
-    if($story == 'vanilla'){
-        $html = "<h2>Basic User Story</h2>";
-        $html .= "As a " . $who . ", I want to " . $what . " so that I can " . $why . ".";
-    } else if ($story == 'fairy') {
-        $html = "<h2>Fairy Tale</h2>";
-        $html .= "Once upon a time in a kingdom far awway, there was a " . $who . " who wanted to " . $what . " but they couldn't because it didn't exist yet. They were very sad ";
-        $html .= "until one day an awesome engineer came to the kingdom's rescue and made it so that the " . $who . " can " . $why . ". The engineer received a raise and everyone lived happily ever after.";
-    } else if ($story == 'pirate'){
-        $html = "<h2>Scurvey Pirrrrate</h2>";
-        $html .= "T' scurviest pirate of the seven seas, " . $who . ", be only famous for t' ability to " . $what . " s'that they be able t' plunder booty an " . $why . ".";
-    } else {
-        $html = "<h2>Whelp, something went wrong.</h2>";
-    }
-    echo $html;
+   
+        echo "<h2>User Story, basilare</h2>";
+        $html .= "Come " . $who . ", voglio " . $what . " così che possa " . $why . ".";
+    echo '<h3><span class="label label-success">'.$html.'</span></h3>';
+
+    echo '  <div class="well">
+            <form class="form-horizontal" id="storyStore" method="post" action="storeStory.php">
+                <fieldset>
+            <div class="control-group">
+            <div class="controls">
+                <button id="save" name="button" class="btn btn-large btn-primary offset2 col-lg-offset-2 col-lg-4">Salva Story</button>
+                </div>
+                    </div>
+                </fieldset>
+                </form>
+';
+
 }
+echo '
+<script type="text/javascript">
+       
+        $("button#save").click(function(){
+        console.log("Saving story.");
+        $.ajax({
+            type: "POST",
+            url: "storeStory.php", //generates story
+            data: $("form#storyGen").serialize(),
+            success: function(msg){
+                $("#storyArticle").html(msg);
+                $( "#storyArticle").fadeIn( "slow" );
+                console.log("This was returned: " + msg);
+            },
+            error: function(obj, status){
+                $("#storyArticle").html("<p>Sorry, something went wrong. We\'ll look into this right away!</p>");
+                console.log("Something went wrong. " + status );
+            }
+        });
+        return false;
+    });
+
+</script>
+    ';
+?>

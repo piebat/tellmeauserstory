@@ -4,7 +4,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Agile User Story Generator">
-    <meta name="author" content="Aeryith">
     <link rel="shortcut icon" href="/media/book_open.ico">
 
     <title>Agile User Story Generator - Tell Me a User Story</title>
@@ -20,67 +19,92 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    
 <body>
 
 <div class="jumbotron">
     <div class="container">
         <h1>Tell Me a User Story</h1>
-        <p>This application is an <strong>agile user story</strong> generator designed to help people write better agile user stories. This application is completely free. No signing up. No adds. Just pure learning and fun.</p>
-        <h2> Try it today!</h2>
+        <p>Genera una User Story</p>
     </div>
 </div>
+<?php
+    $link = mysql_connect('localhost', 'battisto_UStory', 'DT;lSn5Ces{a')
+        or die('Could not connect: ' . mysql_error());
+    mysql_select_db('battisto_UserStory') or die('Could not select database');
 
+    // Performing SQL query
+    $query =  "SELECT * FROM `battisto_UserStory`.`Stories`;";
+    $result = mysql_query($query) or die('Query failed: ' . mysql_error());
+    if ($result) {
+        echo "<table>\n";
+        while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    echo "\t<tr>\n";
+    foreach ($line as $col_value) {
+        echo "\t\t<td>$col_value</td>\n";
+    }
+    echo "\t</tr>\n";
+}
+echo "</table>\n";
+
+// Free resultset
+mysql_free_result($result);
+
+// Closing connection
+mysql_close($link);
+
+    }
+?>
 <div class="container">
     <!-- Example row of columns -->
     <div class="row">
         <div class="col-md-6">
             <div class="well">
-            <form class="form-horizontal" id="storyGen" method="post" action="processContact.php">
+            <form class="form-horizontal" id="storyGen" method="post" action="processStory.php">
                 <fieldset>
 
                     <!-- Form Name -->
                     <legend>Agile User Story Generator</legend>
-
+                    
+                    
                     <!-- Text input-->
                     <div class="control-group">
-                        <label class="control-label col-lg-2" for="who">Who</label>
                         <div class="controls">
-                            <input id="who" name="who" type="text" placeholder="End User" class="input-xlarge col-lg-10" required="required">
-                            <p class="help-block col-lg-offset-2">This is the end user that will use the new widget/function. <br />Example: Registered Customer</p>
+                        <label class="control-label col-lg-2" for="who">Chi</label>
+                          <select name="who" id="who" placeholder="End User" class="input-xlarge col-lg-10" required="required">
+                            <option value="Amministratore">Amministratore</option>
+                            <option value="Dirigente">Dirigente</option>
+                            <option value="Operatore">Operatore</option>
+                          </select>                      
+                            <p class="help-block col-lg-offset-2">Inserire l'attore <br />Esempio: Amministratore </p>
                         </div>
                     </div>
 
                     <!-- Text input-->
                     <div class="control-group">
-                        <label class="control-label col-lg-2" for="what">What</label>
+                        <label class="control-label col-lg-2" for="what">Cosa</label>
                         <div class="controls">
                             <input id="what" name="what" type="text" placeholder="New widget/function" class="input-xlarge col-lg-10" required="required">
-                            <p class="help-block col-lg-offset-2">High level description of newly added functionality. This does not exist yet. <br />Example: add shipping address to user profile</p>
+                            <p class="help-block col-lg-offset-2">L'azione che desidera fare<br />Example: registrare un utente</p>
                         </div>
                     </div>
-
+                    
+                
                     <!-- Text input-->
                     <div class="control-group">
-                        <label class="control-label col-lg-2" for="why">Why</label>
+                        <label class="control-label col-lg-2" for="why">Perchè</label>
                         <div class="controls">
                             <input id="why" name="why" type="text" placeholder="Added value" class="input-xlarge col-lg-10" required="required">
-                            <p class="help-block col-lg-offset-2">Added value to end user. <br />Example: get orders shipped to a new address</p>
-                        </div>
-                    </div>
-
-                    <!-- Select Basic -->
-                    <div class="control-group">
-                        <label class="control-label col-lg-2" for="select">Story Type</label>
-                        <div class="controls">
-                            <select id="storyType" name="type" class="col-lg-4">
-                                <option value="vanilla" selected>Vanilla, Please</option>
-                                <option value="fairy">Fairy Tale</option>
-                                <option value="pirate">Pirate Adventure</option>
-                            </select>
+                            <p class="help-block col-lg-offset-2">Lo scopo che vuole ottnere <br />Example: Per creare i badge</p>
                             <button id="submit" name="button" class="btn btn-large btn-primary offset2 col-lg-offset-2 col-lg-4">Generate Story</button>
                         </div>
-
                     </div>
+
 
 
                 </fieldset>
@@ -94,70 +118,18 @@
                 <p>This was hidden.</p>
             </div>
 
-
-        </div> <!-- end span6 -->
+        </div>
     </div> <!-- end .row -->
 
 
-    <hr>
-
     <footer>
-        <?php function auto_copyright($year = 'auto'){
-             if(intval($year) == 'auto'){ $year = date('Y'); }
-             if(intval($year) == date('Y')){ echo intval($year); }
-             if(intval($year) < date('Y')){ echo intval($year) . ' - ' . date('Y'); }
-             if(intval($year) > date('Y')){ echo date('Y'); }
-         } ?>
-        <p>©  <?php auto_copyright(); ?> Tell Me a User Story | <a href="https://github.com/aeryith/tellmeauserstory"><span class="glyphicon glyphicon-cloud-download"></span> GitHub</a> | <button class="btn-link" data-toggle="modal" data-target="#contact"><span class="glyphicon glyphicon-envelope"></span> Aeryith</button>
+        
 
-        <!-- Modal -->
-        <div class="modal fade" id="contact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Send a Message</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form id="contactForm" class="form-horizontal clearfix" style="margin: 0 15px" name="contactform">
-
-                            <div class="form-group">
-                               <label class="control-label col-lg-2" for="senderName">Your Name</label>
-                               <input type="text" class="col-lg-10" name="senderName" id="name" placeholder="Please type your name" required="required" maxlength="40" />
-                            </div>
-
-                            <div class="form-group">
-                               <label class="control-label col-lg-2" for="senderEmail">Your Email</label>
-                               <input type="email" class="col-lg-10" name="senderEmail" id="email" placeholder="Please type your email address" required="required" maxlength="50" />
-                            </div>
-
-                            <div class="form-group">
-                               <textarea name="message" class="col-lg-12" id="message" placeholder="Please type your message" required="required" cols="80" rows="10" maxlength="10000"></textarea>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="cancel" name="cancel" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="button" id="sendMessage" name="sendMessage" class="btn btn-primary">Send Email</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="pull-right clearfix">
-            <p style="font-size: .8em; line-height: 1.5em; text-align: right"><a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/88x31.png" /></a><br />This <span xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://purl.org/dc/dcmitype/Text" rel="dc:type">work</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://www.aeryith.com/" property="cc:attributionName" rel="cc:attributionURL">Aeryith</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>.</p>
-        </div>
+        
     </footer>
 </div> <!-- /container -->
 
-<!-- Hidden DIVS
-================================================== -->
-<div id="sendingMessage" class="statusMessage" style="display: none"><p>Sending your message. Please wait...</p></div>
-<div id="successMessage" class="statusMessage" style="display: none"><p>Thanks for sending your message! We'll get back to you shortly.</p></div>
-<div id="failureMessage" class="statusMessage" style="display: none"><p>There was a problem sending your message. Please try again.</p></div>
-<div id="incompleteMessage" class="statusMessage" style="display: none"><p>Please complete all the fields in the form before sending.</p></div>
+
 
 
 <!-- Bootstrap core JavaScript
@@ -169,29 +141,6 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-
-        $("button#sendMessage").click(function(){
-            $.ajax({
-                type: "POST",
-                url: "processContact.php", //sends email
-                data: $('form#contactForm').serialize(),
-                success: function() {
-                    $('#contact .modal-body').html("<div id='message'></div>");
-                    $('#message').html("<h2>Contact Form Submitted!</h2>")
-                        .append("<p>We will be in touch soon.</p>")
-                        .hide()
-                        .fadeIn(1500, function() {
-                            $('#message').append("<span class=\"glyphicon glyphicon-ok-sign\"></span>");
-                        });
-
-                    $('#contact .modal-footer').html("<button type=\"button\" id=\"cancel\" name=\"cancel\" class=\"btn btn-default\" data-dismiss=\"modal\">OK</button>");
-                },
-                error: function(obj, status){
-                    alert(status);
-                }
-            });
-        });
-
         return false;
     });
 
@@ -214,12 +163,8 @@
                 console.log('Something went wrong. ' + status );
             }
         });
+        
         return false;
-    });
-
-    //This clears the text box fields when the contact form is closed
-    $('.modal').on('hidden.bs.modal', function(){
-        $(this).find('form')[0].reset();
     });
 </script>
 
