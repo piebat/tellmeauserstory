@@ -24,8 +24,24 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-    
-<body>
+
+<head>    
+<script>
+function showHint(str) {
+    document.getElementById("demo").innerHTML = str;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                document.getElementById("demo").innerHTML = xmlhttp.responseText;
+            }
+        };
+        xmlhttp.open("PUT", "getStories.php?q=" + str, true);
+        xmlhttp.send();
+    }
+</script>
+</head>
+
+    <body>
 
 <div class="jumbotron">
     <div class="container">
@@ -33,33 +49,7 @@
         <p>Genera una User Story</p>
     </div>
 </div>
-<?php
-    $link = mysql_connect('localhost', 'battisto_UStory', 'DT;lSn5Ces{a')
-        or die('Could not connect: ' . mysql_error());
-    mysql_select_db('battisto_UserStory') or die('Could not select database');
 
-    // Performing SQL query
-    $query =  "SELECT * FROM `battisto_UserStory`.`Stories`;";
-    $result = mysql_query($query) or die('Query failed: ' . mysql_error());
-    if ($result) {
-        echo "<table>\n";
-        while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
-    echo "\t<tr>\n";
-    foreach ($line as $col_value) {
-        echo "\t\t<td>$col_value</td>\n";
-    }
-    echo "\t</tr>\n";
-}
-echo "</table>\n";
-
-// Free resultset
-mysql_free_result($result);
-
-// Closing connection
-mysql_close($link);
-
-    }
-?>
 <div class="container">
     <!-- Example row of columns -->
     <div class="row">
@@ -71,12 +61,11 @@ mysql_close($link);
                     <!-- Form Name -->
                     <legend>Agile User Story Generator</legend>
                     
-                    
                     <!-- Text input-->
                     <div class="control-group">
                         <div class="controls">
                         <label class="control-label col-lg-2" for="who">Chi</label>
-                          <select name="who" id="who" placeholder="End User" class="input-xlarge col-lg-10" required="required">
+                          <select name="who" id="who" placeholder="End User" class="input-xlarge col-lg-10" required="required" onchange="showHint(this.value)">
                             <option value="Amministratore">Amministratore</option>
                             <option value="Dirigente">Dirigente</option>
                             <option value="Operatore">Operatore</option>
@@ -87,7 +76,7 @@ mysql_close($link);
 
                     <!-- Text input-->
                     <div class="control-group">
-                        <label class="control-label col-lg-2" for="what">Cosa</label>
+                        <label class="control-label col-lg-2" for="what">Cosa vuole</label>
                         <div class="controls">
                             <input id="what" name="what" type="text" placeholder="New widget/function" class="input-xlarge col-lg-10" required="required">
                             <p class="help-block col-lg-offset-2">L'azione che desidera fare<br />Example: registrare un utente</p>
@@ -117,7 +106,13 @@ mysql_close($link);
             <div id="storyArticle" style="display: none">
                 <p>This was hidden.</p>
             </div>
-
+        </div>
+        
+        <div class="col-md-6">
+           <!-- Generated story appears here -->
+            <div id="demo" >
+                <p>This was hidden.</p>
+            </div>
         </div>
     </div> <!-- end .row -->
 
@@ -141,6 +136,9 @@ mysql_close($link);
 
 <script type="text/javascript">
     $(document).ready(function () {
+       var e = document.getElementById("who");
+       var strUser = e.options[e.selectedIndex].value;
+       showHint(strUser) 
         return false;
     });
 

@@ -13,7 +13,7 @@ if (isset($_POST['who'])) {
 
    
         echo "<h2>User Story, basilare</h2>";
-        $html .= "Come " . $who . ", voglio " . $what . " così che possa " . $why . ".";
+        $html .= "Come " . $who . ", voglio " . $what . " così " . $why . ".";
     echo '<h3><span class="label label-success">'.$html.'</span></h3>';
 
     echo '  <div class="well">
